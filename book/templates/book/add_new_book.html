@@ -1,0 +1,73 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Add New Book</h2>
+    {% if form.errors %}
+       {% for field in form %}
+           {% for error in field.errors %} 
+              <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+              </div>
+           {% endfor %}
+       {% endfor %}
+    {% endif %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="form-label">{{ form.isbn.label }}</div>
+                <div>{{ form.isbn }}</div>
+                <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                    Please choose a username.
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.title.label }}</div>
+                <div>{{ form.title }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.author.label }}</div>
+                <div>{{ form.author }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.pages_no.label }}</div>
+                <div>{{ form.pages_no }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.publisher.label }}</div>
+                <div>{{ form.publisher }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.publish_year.label }}</div>
+                <div>{{ form.publish_year }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.edition.label }}</div>
+                <div>{{ form.edition }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.total_quantity.label }}</div>
+                <div>{{ form.total_quantity }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.category.label }}</div>
+                <div>{{ form.category }}</div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="">Cover Image: {{ form.cover_img }}</div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="">Content Image: {{ form.contents }}</div>
+        </div>
+        <center>
+            <input class="btn btn-secondary" type=button value="Cancel" onClick="javascript:history.go(-1);">
+            <input type="reset" id="" class="btn btn-danger btn-md center-block" value="Reset">
+            <input type="submit" id="" class="btn btn-primary btn-md center-block" value="Add">
+        </center>
+    </form>
+</div>
+{% endblock content %}

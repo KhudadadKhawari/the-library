@@ -1,0 +1,60 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="container mt-3">
+    <input class="mb-3" type=button value="< Back" onClick="javascript:history.go(-1);">
+    <div class="row ">
+        <div class="col-2">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <!-- #############################################3 -->
+                    for file upload cover_img.url 
+                    <a href="{% if book.cover_img.url != 'NULL' %}{{ book.cover_img }}{% endif %}"><img src="{% if book.cover_img.url != 'NULL' %}{{ book.cover_img }}{% endif %}" class="img-fluid" alt="{{ book.title }}"></a>
+                </li>
+                {% if book.rating > 0 %}
+                    <li class="list-group-item text-center ">
+                        {% with ''|center:book.rating as range %}
+                        {% for i in range %}
+                        <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% endwith %} 
+                    </li>
+                {% endif %}
+                <li class="list-group-item">
+                    {% if book.rented_count >= 0 and book.total_quantity != book.rented_count %}
+                        <div class="bg-success text-white text-center">Availible</div>
+                    {% else %}
+                        <div class="bg-danger text-white text-center">Not Availible</div>
+                    {% endif %}
+                </li>
+                <li class="list-group-item"><a class="btn btn-primary" href="#">Add To Favourites</a></li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item ">Category: <b>{{book.category}}</b></li>
+                <li class="list-group-item">Title: <b>{{book.title}}</b></li>
+                <li class="list-group-item">Author: <b>{{book.author}}</b></li>
+                <li class="list-group-item">Pages No: <b>{{book.pages_no}}</b></li>
+                <li class="list-group-item">Publisher: <b>{{book.publisher}}</b></li>
+                <li class="list-group-item">Publish year: <b>{{book.publish_year}}</b></li>
+                <li class="list-group-item">Edition: <b>{{book.edition}}</b></li> 
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <h1 class="text-center">Contents</h1>
+        <div class="col">
+            {% if book.contents.url != 'NULL' %}
+            <ul class="list-group list-flush">
+                <li class="list-group-item">
+                    <img src="{{ book.contents.url }}" class="img-fluid" style="width: 15rem;" alt="{{ book.title }}">
+                </li>
+            </ul>
+                
+            {% else %}
+                <h4 class="text-center">No Content Availible</h4>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+{% endblock content %}

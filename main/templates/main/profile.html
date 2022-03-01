@@ -1,0 +1,107 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/user_profile_styles.css' %}">
+{% endblock head %}
+
+{% block content %}
+<div class="container">
+    {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                {{ field.name }}
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row gutters">
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <div class="user-avatar">
+                                    <div class="profile-pic">
+                                        <label class="-label" for="file">
+                                        <span class="glyphicon glyphicon-camera"></span>
+                                        <span>Change Image</span>
+                                        </label>
+                                        <!-- <input id="file" type="file" onchange="loadFile(event)"/> -->
+                                        {{form.photo}}
+                                        {% if 'moderator' in request.user.groups.all.0.name %}
+                                            <img src="{{request.user.moderator.photo.url}}" id="output" width="200" />
+                                        {% else %}
+                                            <img src="{{request.user.student.photo.url}}" id="output" width="200" />
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <h5 class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</h5>
+                                <h6 class="user-email">@{{ request.user.username }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div  class="card-body">
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <h6 class="mb-2 text-primary">Personal Details</h6>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    {{form.username}}
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    {{form.email}}
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="first_name">First Name</label>
+                                    {{form.first_name}}
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="last_name">Last Name</label>
+                                    {{form.last_name}}
+                                </div>
+                            </div>
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <center>
+                                    <input class="btn btn-secondary" type="button" value="Cancel" onClick="javascript:history.go(-1);">
+                                    <input  class="btn btn-primary" type="submit"   value="Update">
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var loadFile = function (event) {
+    var image = document.getElementById("output");
+    image.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+{% endblock content %}

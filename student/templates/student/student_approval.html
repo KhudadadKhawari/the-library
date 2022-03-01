@@ -1,0 +1,142 @@
+{% extends 'main/layout.html' %}
+{% load mathfilters %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 text-center">Not Approved Students</h1>
+    <p class="mb-4"></p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date Joined</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>College Reg No</th>
+                            <th>Graduation Year</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th></th>
+                            
+                            
+                            <!-- contitn -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{student.created_date|date:"d/m/Y"}}</td>
+                            <td>{{student.user.username}}</td>
+                            <td>{{student.user.first_name}}</td>
+                            <td>{{student.user.last_name}}</td>
+                            <td>{{student.clg_reg_no}}</td>
+                            <td>{{student.graduation_year}}</td>
+                            <td>{{student.user.email}}</td>
+                            <td>{{student.phone}}</td>
+                            <td>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#student{{student.id}}" >Approve</button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#student{{student.id}}decline" >Decline</button>
+                                <div class="modal fade" id="student{{student.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Delete Student</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are You sure You want to Approve {{student.user.username}}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{% url 'confirm_student_approval' student.user.username %}?redirect_view=student_approval" method="POST">
+                                                {% csrf_token %}
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                <input class="btn btn-success" type="submit" name="Confirm" value="Approve">
+                                            </form>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="student{{student.id}}decline" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Decline Student Approval</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are You sure You want to Decline  {{student.user.username}} Joining Request?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{% url 'decline_student_approval' student.user.username %}?redirect_view=student_approval" method="POST">
+                                                {% csrf_token %}
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                <input class="btn btn-danger" type="submit" name="Confirm" value="Decline">
+                                            </form>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<script type="text/javascript">
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+{% endblock content %}
+
+
+
+

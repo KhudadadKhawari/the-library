@@ -1,0 +1,65 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+    <div class="content mt-3">
+        <div class="container">
+            <div class="row">
+                {% for book in page_obj %}
+                    <div class="card mb-4 box-shadow" style="width: 15rem; margin: 5px;">
+                        <div class="card-header">
+                            <a href="{% url 'display_book' book.isbn %}"><img src="{% if book.cover_img.url != 'NULL' %}{{ book.cover_img }}{% endif %}" class="card-img-top" style="height: 15rem;" alt="{{ book.title }}"></a>
+                        </div>
+                        <br>
+                        <div class="card-body d-flex flex-column">
+                            <!-- <ul class="list-group list-group-flush text-center"> -->
+                                <h5 class="text-dark">{{ book.title }}</h5>
+                                <h6 class="text-secondary">{{ book.author }}</h6>
+                                <!--### Rating ###-->
+                                {% if book.rating > 0 %}
+                                    {% with ''|center:book.rating as range %}
+                                    {% for i in range %}
+                                    <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                    {% endwith %} 
+                                {% endif %}
+                                <a class="btn btn-primary mt-auto" href="{% url 'add_to_favourites' book.isbn %}">Add To Favourites</a>
+                            <!-- </ul> -->
+                        </div>
+                    </div>
+                {% endfor %}
+                <nav class="d-flex justify-content-center" aria-label="...">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+                        {% endif %}
+                        
+                        {% if page_obj.number|add:'-4' > 1 %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+                        {% endif %}
+                        
+                        {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+                        {% endif %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link" ><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

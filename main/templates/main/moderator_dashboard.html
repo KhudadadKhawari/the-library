@@ -1,0 +1,331 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 text-center">Moderator's Dashboard</h1>
+    <p class="mb-4"></p>
+    <div class="row">
+        <div class="col">
+            <!-- card  -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <div class="h3 mb-2 text-gray-800 text-center">Categories</div>
+                    <p class="mb-4"></p>
+                </div>
+                <div class="card-body">
+                    <!-- Add Search and Add New Button -->
+                    <div>
+                        <form method="post" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name="search_for_cat" class="form-control bg-light small" placeholder="Search for..."
+                                    aria-label="Search" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <button type="button" class="btn btn-primary  float-right" data-toggle="modal" data-target="#add_new_cat" >Add New</button>
+                        <div class="modal fade" id="add_new_cat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add New Category</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <form action="{% url 'new_category' %}" method="POST">
+                                        <div class="modal-body">
+                                            <label for="category">Category Name:</label>
+                                            <input type="text" name="category" placeholder="Enter a New Category name...">
+                                        </div>
+                                        <div class="modal-footer">
+                                            {% csrf_token %}
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <input class="btn btn-primary" type="submit" name="Confirm" value="Add">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <!-- End Search and Add New Button -->
+                    <div class="table-responsive">
+                        <table class="table table table-striped" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>name</th>
+                                    <th></th>
+                                    <!-- contitn -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                    <td>{{category.id}}</td>
+                                    <td>{{category.category}}</td>
+                                    <td>
+                                        <!-- edit button -->
+                                        <button type="button" class="btn btn-primary  float-right mr-2" data-toggle="modal" data-target="#cat-{{category.id}}-edit" >Edit</button>
+                                        <div class="modal fade" id="cat-{{category.id}}-edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    </div>
+                                                    <form action="{% url 'update_category' category.id %}" method="POST">
+                                                        <div class="modal-body">
+                                                            <label for="category">Category:</label>
+                                                            <input type="text" name="category" value="{{category.category}}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {% csrf_token %}
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                            <input class="btn btn-primary" type="submit" name="Confirm" value="Update">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end edit button and model -->
+                                        <!-- Delete Button -->
+                                        <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#cat-{{category.id}}-delete" >Delete</button>
+                                        <div class="modal fade" id="cat-{{category.id}}-delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are You sure You want to Remove {{category.category}} ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{% url 'delete_category' category.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <input class="btn btn-danger" type="submit" name="Confirm" value="Delete">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Delete Button and model -->
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <nav class="d-flex justify-content-center" aria-label="...">
+                        <ul class="pagination">
+                            {% if categories.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?cat_page={{ categories.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+                            {% endif %}
+                            
+                            {% if categories.number|add:'-4' > 1 %}
+                                <li class="page-item"><a class="page-link" href="?cat_page={{ categories.number|add:'-5' }}">&hellip;</a></li>
+                            {% endif %}
+                            
+                            {% for i in categories.paginator.page_range %}
+                                {% if categories.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                                {% elif i > categories.number|add:'-5' and i < categories.number|add:'5' %}
+                                    <li class="page-item"><a class="page-link" href="?cat_page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if categories.paginator.num_pages > categories.number|add:'4' %}
+                                <li class="page-item"><a class="page-link" href="?cat_page={{ categories.number|add:'5' }}">&hellip;</a></li>
+                            {% endif %}
+                            
+                            {% if categories.has_next %}
+                                <li class="page-item"><a class="page-link" href="?cat_page={{ categories.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link" ><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- end of card -->
+        </div>
+        <div class="col">
+            <!-- card  -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <div class="h3 mb-2 text-gray-800 text-center">Tags</div>
+                    <p class="mb-4"></p>
+                </div>
+                <div class="card-body">
+                    <!-- Add Search and Add New Button -->
+                    <div>
+                        <form method="post" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name="search_for_tag" class="form-control bg-light small" placeholder="Search for..."
+                                    aria-label="Search" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <button type="button" class="btn btn-primary  float-right" data-toggle="modal" data-target="#add_new_tag" >Add New</button>
+                        <div class="modal fade" id="add_new_tag" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add New Tag</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <form action="{% url 'new_tag' %}" method="POST">
+                                        <div class="modal-body">
+                                            <label for="tag_name">Tag Name:</label>
+                                            <input type="text" name="tag_name" placeholder="Enter a New Tag...">
+                                        </div>
+                                        <div class="modal-footer">
+                                            {% csrf_token %}
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <input class="btn btn-primary" type="submit" name="Confirm" value="Add">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <!-- End Search and Add New Button -->
+                    <div class="table-responsive">
+                        <table class="table table table-striped"  width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th></th>
+                                    <!-- contitn -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tag in tags %}
+                                <tr>
+                                   <td>{{tag.id}}</td>
+                                   <td>{{tag.name}}</td>
+                                   <td>
+                                       <!-- edit button -->
+                                       <button type="button" class="btn btn-primary float-right mr-2" data-toggle="modal" data-target="#key-{{tag.id}}-edit" >Edit</button>
+                                       <div class="modal fade" id="key-{{tag.id}}-edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                           <div class="modal-dialog" role="document">
+                                           <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Edit Tag</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    </div>
+                                                    <form action="{% url 'update_tag' tag.id %}" method="POST">
+                                                        <div class="modal-body">
+                                                            <label for="tag">Tag:</label>
+                                                            <input type="text" name="tag_name" value="{{tag.name}}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {% csrf_token %}
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                            <input class="btn btn-primary" type="submit" name="Confirm" value="Update">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                           </div>
+                                       </div>
+                                       <!-- end edit button and model -->
+
+                                        <button type="button" class="btn btn-danger  float-right" data-toggle="modal" data-target="#key-{{tag.id}}" >Delete</button>
+                                        <div class="modal fade" id="key-{{tag.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Delete Tag</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are You sure You want to Remove {{tag.name}}?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{% url 'delete_tag' tag.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <input class="btn btn-danger" type="submit" name="Confirm" value="Delete">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                   </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <nav class="d-flex justify-content-center" aria-label="...">
+                        <ul class="pagination">
+                            {% if tags.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?key_page={{ tags.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+                            {% endif %}
+                            
+                            {% if tags.number|add:'-4' > 1 %}
+                                <li class="page-item"><a class="page-link" href="?key_page={{ tags.number|add:'-5' }}">&hellip;</a></li>
+                            {% endif %}
+                            
+                            {% for i in tags.paginator.page_range %}
+                                {% if tags.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                                {% elif i > tags.number|add:'-5' and i < tags.number|add:'5' %}
+                                    <li class="page-item"><a class="page-link" href="?key_page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if tags.paginator.num_pages > tags.number|add:'4' %}
+                                <li class="page-item"><a class="page-link" href="?key_page={{ tags.number|add:'5' }}">&hellip;</a></li>
+                            {% endif %}
+                            
+                            {% if tags.has_next %}
+                                <li class="page-item"><a class="page-link" href="?key_page={{ tags.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link" ><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- end of card -->
+        </div>
+    </div>
+
+
+    
+</div>
+{% endblock content %}

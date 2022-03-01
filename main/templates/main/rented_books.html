@@ -1,0 +1,66 @@
+{% extends 'main/layout.html' %}
+{% load mathfilters %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 text-center">Rented Books</h1>
+    <p class="mb-4"></p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date Rented</th>
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Edition</th>
+                            <th>Publisher</th>
+                            <th>Issued To</th>
+                            <th>Issued By</th>
+                            <th>Fine Per Day</th>
+                            <th>Fine Amount</th>
+                            <th>Fine Paid?</th>
+                            
+                            
+                            <!-- contitn -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            <td>{{book.date_rented|date:"d/m/Y"}}</td>
+                            <td>{{book.book.isbn}}</td>
+                            <td>{{book.book.title}}</td>
+                            <td>{{book.book.author}}</td>
+                            <td>{{book.book.category}}</td>
+                            <td>{{book.book.edition}}</td>
+                            <td>{{book.book.publisher}}</td>
+                            <td>{{book.student.user.first_name}} {{book.student.user.last_name}}</td>
+                            <td>{{book.moderator.user.first_name}} {{book.moderator.user.last_name}}</td>
+                            <td>{{book.fine_per_day}}</td>
+                            <td>{{ book.fine_amount_ }}</td>
+                            <td>{% if book.payment_status == 0 %}Not Paid{% elif book.payment_status == 1%}Paid{%else%}Not Applicable{% endif %}</td>
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+
+{% endblock content %}
+
+
+
+

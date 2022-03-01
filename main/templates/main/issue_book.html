@@ -1,0 +1,184 @@
+{% extends 'main/layout.html' %}
+{% load mathfilters %}
+{% block head %}
+<style type="text/css">
+  #table-wrapper {
+ 	height: 500px;
+	overflow: scroll;
+}
+thead tr:nth-child(1) th{
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+</style>
+{% endblock head %}
+{% block content %}
+<div class="container-fluid">
+  <!-- page heading -->
+  <h1 class="h3 mb-2 text-gray-800 text-center">Issue Book</h1>
+  <p class="mb-4"></p>
+</div>
+<form method="POST" class="text-center">
+  {% csrf_token %}
+
+  <div class=" align-items-center ">
+    <div class="row mb-3">
+      <div class="col">
+        <label for="isbn">ISBN</label><br>
+        <input type="text" name="isbn" id="isbn" onkeyup="myFunction()" required class=" mb-3" placeholder="Enter Complete ISBN" autocomplete="off"> 
+      </div>
+      <div class="col">
+        <label for="student_id">Student ID</label><br>
+        <input type="number" name="stid"  id="stid" onkeyup="myFunction2()" required class=" mb-3" placeholder="Enter Complete Student ID" autocomplete="off">
+      </div>
+    </div>
+    <input class="btn btn-secondary mb-3" type=button value="Cancel" onClick="javascript:history.go(-1);">
+    <input type="submit" class="mb-3 btn btn-primary" value="Issue Book">
+    <hr>
+  </div>
+</form>
+<div class="row">
+  <div class="col">
+    <div class="card shadow mb-4">
+      <div class="card-header">
+        <div class="h3 mb-2 text-gray-800 text-center">Books</div>
+      </div>
+      <div class="card-body">
+        <!-- card body -->
+        <div class="table-responsive" id="table-wrapper">
+          <table class="table table table-striped" id="myTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Edition</th>
+                <th>Publisher</th>
+                <th>Available Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for book in books %}
+              <tr>
+                <td>{{book.isbn}}</td>
+                <td>{{book.title}}</td>
+                <td>{{book.author}}</td>
+                <td>{{book.category}}</td>
+                <td>{{book.edition}}</td>
+                <td>{{book.publisher}}</td>
+                <td>{{ book.total_quantity|sub:book.rented_count}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow mb-4">
+      <div class="card-header">
+        <div class="h3 mb-2 text-gray-800 text-center">Students</div>
+      </div>
+      <div class="card-body">
+        <!-- card body -->
+        <div class="table-responsive" id="table-wrapper"> 
+          <table class="table table table-striped" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>College Reg No</th>
+                <th>Graduation year</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+              <tr>
+                <td>{{student.id}}</td>
+                <td>{{student.user.username}}</td>
+                <td>{{student.user.first_name}}</td>
+                <td>{{student.user.last_name}}</td>
+                <td>{{student.clg_reg_no}}</td>
+                <td>{{student.graduation_year}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("isbn");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function makeTableScroll() {
+    // Constant retrieved from server-side via JSP
+    var maxRows = 4;
+
+    var table = document.getElementById('myTable');
+    var wrapper = table.parentNode;
+    var rowsInTable = table.rows.length;
+    var height = 0;
+    if (rowsInTable > maxRows) {
+        for (var i = 0; i < maxRows; i++) {
+            height += table.rows[i].clientHeight;
+        }
+        wrapper.style.height = height + "px";
+    }
+}
+
+function myFunction2() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("stid");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("dataTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
+{% endblock content %}

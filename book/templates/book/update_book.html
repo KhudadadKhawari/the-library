@@ -1,0 +1,89 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Update Book Details</h2>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="form-label">{{ form.isbn.label }}</div>
+                <div>{{ form.isbn }}</div>
+                <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                    Please choose a username.
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.title.label }}</div>
+                <div>{{ form.title }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.author.label }}</div>
+                <div>{{ form.author }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.pages_no.label }}</div>
+                <div>{{ form.pages_no }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.publisher.label }}</div>
+                <div>{{ form.publisher }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.publish_year.label }}</div>
+                <div>{{ form.publish_year }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.edition.label }}</div>
+                <div>{{ form.edition }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.total_quantity.label }}</div>
+                <div>{{ form.total_quantity }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ form.category.label }}</div>
+                <div>{{ form.category }}</div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="">Cover Image: {{ form.cover_img }}</div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="">Content Image: {{ form.contents }}</div>
+        </div>
+        <br>
+        <center>
+            <input class="btn btn-secondary" type=button value="Cancel" onClick="javascript:history.go(-1);">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_book_model" >Delete</button>
+            <input type="submit" id="" class="btn btn-success btn-md center-block" value="Update">
+        </center>
+    </form>
+</div>
+
+
+<div class="modal fade" id="delete_book_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Book</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Are You sure You want to Remove {{form.title.value}}?
+        </div>
+        <div class="modal-footer">
+            <form action="{% url 'delete_book' form.isbn.value  %}" method="POST">
+				{% csrf_token %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<input class="btn btn-danger" type="submit" name="Confirm" value="Delete">
+			</form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}

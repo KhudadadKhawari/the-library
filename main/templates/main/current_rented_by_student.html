@@ -1,0 +1,62 @@
+{% extends 'main/layout.html' %}
+{% load mathfilters %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- DataTales Example -->
+    <div class="card shadow ml-5 mr-5">
+        <div class="card-header">
+            <div class="h3 mb-2 text-gray-800 text-center">Current Rented Books</div>
+            <p class="mb-4"></p>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date Rented</th>
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Pages</th>
+                            <th>Edition</th>
+                            <th>Publisher</th>
+                            <th>Publish Year</th>
+                            <th>Fine per Day</th>
+                            <th>Fine Amount</th>
+                            
+                            <!-- contitn -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in current_issued_books %}
+                        <tr>
+                            <td>{{book.date_rented|date:"d/m/Y"}}</td>
+                            <td>{{book.book.isbn}}</td>
+                            <td>{{book.book.title}}</td>
+                            <td>{{book.book.author}}</td>
+                            <td>{{book.book.category}}</td>
+                            <td>{{book.book.pages_no}}</td>
+                            <td>{{book.book.edition}}</td>
+                            <td>{{book.book.publisher}}</td>
+                            <td>{{book.book.publish_year}}</td>
+                            <th>{{book.fine_per_day}}</th>
+                            <th>{{book.fine_amount_}}</th>
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+{% endblock content %}
+
+
+
+
