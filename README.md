@@ -10,28 +10,28 @@ You need to have python installed, and you have to install the required packages
 ## Configuration
 1. After all the requirements are installed you have to configure the database. You can connect this application to database of your choice, or you can just create the ***sqlite*** ORM db using the following command.
 <br>
-Go to the **the-library** directory where **manage.py** file is located and type the following command:
-    > python manage.py migrate
-2. After the database migration you have to create a superuser. use the following command and provide *username* and *password*:
-   > python manage.py createsuperuser
-3. Now you have to start the server use the following command:
-    > python manage.py runserver
+Go to the **the-library** directory where **manage.py** file is located and type the following command:<br>
+    > python manage.py migrate <br>
+2. After the database migration you have to create a superuser. use the following command and provide *username* and *password*:<br>
+   > python manage.py createsuperuser <br>
+3. Now you have to start the server use the following command: <br>
+    > python manage.py runserver <br>
 4. If all required packages were installed there shouldn't be any problem with the above command. <br>
 Now open your browser and go to this link: <http://127.0.0.1:8000/admin>
 5. Once you are in the Django administration login page, Login using your superuser **username** and **password**. <br>
-You must see this page now: 
-![Django administration page](screenshots/01_django_admin.png)
+You must see this page now: <br>
+![Django administration page](screenshots/01_django_admin.png) <br>
 6. You have to add the following records in the ***Groups*** table:
    * admin
    * moderator
    * student
-7. then go to Users table and click on the *superuser* you have created. Scroll down to Groups Section and add the ***admin*** to the Chosen Groups, Scroll down to the bottom and **save** changes. 
-![Django administration page](screenshots/02_user_groups.png)
+7. then go to Users table and click on the *superuser* you have created. Scroll down to Groups Section and add the ***admin*** to the Chosen Groups, Scroll down to the bottom and **save** changes.<br> 
+![Django administration page](screenshots/02_user_groups.png)<br>
 You won't need to use the */admin* link to access the admin panel anymore. The application will check which user groups you are in and redirect you to the related page. 
 #### 8. Creating The Moderator User
    You have to create a moderator user to login as moderator, and you can do that through **Django Administration** page only.<br>
 * Click on the **+Add** button in front of the **Users** table in django administration page and create a new user, give the required fields [**username**, **password**, **password confirmation**], then click on **save and continue editing**.  <br>
-![Django administration page](screenshots/03_moderator_user.png)
+![Django administration page](screenshots/03_moderator_user.png) <br>
 * Enter the **First Name**, **Last Name**, **Email** and also add **moderator** to the ***Chosen Groups*** list, Then Save it.
 * in django administration page click on **+Add** button in front of ****Moderators****. Choose the **User** as you created for moderator, change the **Email Verification** from **0** to **1**, and choose a **photo** file for profile picture. Then Save it
 #### 9. Creating the Student User
