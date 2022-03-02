@@ -9,7 +9,6 @@ You need to have python installed, and you have to install the required packages
 > pip install -r requirements.txt
 ## Configuration
 1. After all the requirements are installed you have to configure the database. You can connect this application to database of your choice, or you can just create the ***sqlite*** ORM db using the following command.
-<br>
 Go to the **the-library** directory where **manage.py** file is located and type the following command:<br>
     > python manage.py migrate <br>
 2. After the database migration you have to create a superuser. use the following command and provide *username* and *password*:<br>
