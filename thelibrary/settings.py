@@ -80,24 +80,24 @@ WSGI_APPLICATION = 'thelibrary.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 # This is for the ORM SQLITE Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# Configuring the PostgreSQL Datbase
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'database name',
-        'USER': 'username',
-        'PASSWORD': 'password',
-        'HOST': 'host address ex: 127.0.0.1',
-        'PORT': 'port number ex: 5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# # Configuring the PostgreSQL Datbase
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'database name',
+#         'USER': 'username',
+#         'PASSWORD': 'password',
+#         'HOST': 'host address ex: 127.0.0.1',
+#         'PORT': 'port number ex: 5432'
+#     }
+# }
 
 
 # Password validation
@@ -153,7 +153,7 @@ PASSWORD_RESET_TIMEOUT = 3600
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'youremail@gmail.com'
-EMAIL_HOST_PASSWORD = 'email password" # os.environ['password_key'] suggested
+EMAIL_HOST_PASSWORD = 'email password'  # os.environ['password_key'] suggested
 EMAIL_USE_TLS = True
 
 
