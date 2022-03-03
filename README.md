@@ -1,5 +1,6 @@
 # The Library
 This is a web application developed with Django and Python in the back-end, and HTML/CSS/Bootstrap/JavaScript in Front-End.
+I have used the **SB-Admin-2** template which is open source, click [Here](https://github.com/StartBootstrap/startbootstrap-sb-admin-2/blob/master/LICENSE) to check its License.
 It submitted as Mini project of ***5<sup>th</sup>*** Semester.
 <br> The Library web application helps library staff to manage daily operations and keeping the records. Also, it helps students to have access to the available books in the library and view the books they have rented currently or previously from the library. 
 It makes daily operations easier for people who work in the library, and it saves a lot of students time. So whenever a student needs to borrow some book from the library they don’t have to visit the library physically to check whether the book is available or not.
