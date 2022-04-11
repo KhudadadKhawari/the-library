@@ -13,7 +13,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +24,7 @@ SECRET_KEY = 'django-insecure-zue%pwe5qho*&%0vhp*7a#q6et7%s7%w&elab5ud0smy08nboj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['thelibrary.herokuapp.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['thelibrary.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -138,11 +137,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
