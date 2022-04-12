@@ -3,11 +3,31 @@ This is a web application developed with Django and Python in the back-end, and 
 I have used the **SB-Admin-2** template which is open source, click [Here](https://github.com/StartBootstrap/startbootstrap-sb-admin-2/blob/master/LICENSE) to check its License.
 It submitted as Mini project of ***5<sup>th</sup>*** Semester.
 <br> The Library web application helps library staff to manage daily operations and keeping the records. Also, it helps students to have access to the available books in the library and view the books they have rented currently or previously from the library. 
-It makes daily operations easier for people who work in the library, and it saves a lot of students time. So whenever a student needs to borrow some book from the library they don’t have to visit the library physically to check whether the book is available or not.
+It makes daily operations easier for people who work in the library, and it saves a lot of students time. So whenever a student needs to borrow some book from the library they don’t have to visit the library physically to check whether the book is available or not.  
 <br>
+<hr>
+<br>
+
+## Demo
+Click on bellow link to view the demo: <br>
+https://thelibrary.herokuapp.com
+
+### Authentication:
+***Student*** <br>
+> ***username:*** demo_student <br>
+***Password:*** demopassword
+
+***Moderator***
+> ***Username:*** demo_moderator <br>
+***Password:***  demopassword
+
+<br> <hr> <br>
+
 ## Installation
 You need to have python installed, and you have to install the required packages from **requirements.txt** file into your virtual environment or system using the following command:
 > pip install -r requirements.txt
+
+***Note:*** You have to delete the **db.sqlite3** file before doing bellow configurations. 
 ## Configuration
 1. After all the requirements are installed you have to configure the database. You can connect this application to database of your choice, or you can just create the ***sqlite*** ORM db using the following command.
 Go to the **the-library** directory where **manage.py** file is located and type the following command:<br>
