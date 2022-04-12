@@ -18,7 +18,7 @@ from django.core.paginator import Paginator
 # Moderator User Views
 # all current Approved Students
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def all_students_moderator_view(request):
     students = Student.objects.filter(approved=1)
     print(students)
@@ -33,7 +33,7 @@ def all_students_moderator_view(request):
 
 # Students in WAITING LIST to Join
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def student_approval(request):
     students = Student.objects.filter(approved=0)
 
@@ -47,7 +47,7 @@ def student_approval(request):
 
 # students who got declined 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def declined_students(request):
     students = Student.objects.filter(approved=2)
 
@@ -62,7 +62,7 @@ def declined_students(request):
 # OPERATIONS ON STUDENT
 # Approve Student
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def confirm_student_approval(request, username):
     redirect_view = request.GET.get('redirect_view','')
     if request.method == 'POST':
@@ -77,12 +77,13 @@ def confirm_student_approval(request, username):
         student.approved = 1
         student.approved_by = moderator 
         student.save()
+        messages.success(request, f'{student.user.username} Approved Successfully', 'success')
     return redirect(redirect_view)
 
 
 # Decline The student joining request / Disable Approved users Account
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def decline_student_approval(request, username):
     redirect_view = request.GET.get('redirect_view','')
     if request.method == 'POST':
@@ -93,15 +94,22 @@ def decline_student_approval(request, username):
         student.approved = 2 # 1 for Approved, 2 for Declined, 0 for Waiting
         user.save()
         student.save()
+        messages.success(request, f'{student.user.username} Joining Request Declined Declined', 'success')
     return redirect(redirect_view)
 
 
 # Delete Student
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def delete_student(request,username):
     redirect_view = request.GET.get('redirect_view','')
     if request.method == 'POST':
+
+        # DEMO USERS AREN'T ALLOWED TO DELETE STUDENTS RECORD
+        if 'demo_moderator' in request.user.groups.values_list('name',flat=True):
+            messages.error(request, 'You are not allowed to delete students')
+            return redirect(redirect_view)
+
         user = User.objects.get(username=username)
         student = Student.objects.get(user=user)
         # Check if Sutudent Doesn't have any not returned book 

@@ -16,7 +16,7 @@ from django.db.models import Q
 # from main.filters import CategoryFilter
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def add_new_book(request):
     
     form = BookForm()
@@ -26,6 +26,13 @@ def add_new_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         current_user = request.user
+
+        # DEMO USERS ARE NOT ALLOWED TO ADD NEW BOOKS
+        if 'demo_moderator' in current_user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to add new books!', 'alert-info')
+            return redirect(add_new_book)
+
+
         if form.is_valid():
             new_book = form.save(commit=False)
             new_book.added_by = user
@@ -42,7 +49,7 @@ def add_new_book(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def all_books_admin_view(request):
     books = Book.objects.all()
 
@@ -56,13 +63,19 @@ def all_books_admin_view(request):
 
 # Update BOOK details
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def update_book(request, isbn):
     book = Book.objects.get(isbn=isbn)
     form = BookForm(instance=book)
 
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES, instance=book)
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO UPDATE BOOKS DETAILS
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to update book\'s details!', 'alert-info')
+            return redirect(update_book, isbn)
+
         if form.is_valid():
             form.save()
             messages.success(request, "Details Updated Successfully", "alert-success")
@@ -74,10 +87,16 @@ def update_book(request, isbn):
 
 # Delete Book
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def delete_book(request, isbn):
     book = Book.objects.get(isbn=isbn)
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO DELETE BOOKS RECORDS
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to delete books!', 'alert-info')
+            return redirect('all_books_admin_view')
+
         book.delete()
         messages.success(request, f"{book.title} Deleted Successfully", "alert-info")
         return redirect('all_books_admin_view')
@@ -89,9 +108,15 @@ def delete_book(request, isbn):
 
 # Add New Category
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def new_category(request):
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO ADD NEW CATEGORIES
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to add new categories!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         try:
             category_name = request.POST.get('category').lower()
             new = BookCategory.objects.create(category=category_name)
@@ -102,9 +127,15 @@ def new_category(request):
 
 # Add New Tag
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def new_tag(request):
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO ADD NEW TAGS
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to add new tags!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         try:
             tag_name = request.POST.get('tag_name').lower()
             new = Tag.objects.create(name=tag_name)
@@ -114,13 +145,18 @@ def new_tag(request):
         return redirect('moderator_dashboard')
 
 
-
 # Update Category
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def update_category(request,id):
     category = BookCategory.objects.get(id=id)
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO UPDATE CATEGORIES
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to update categories!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         new_name = request.POST.get('category').lower()
         category.category = new_name
         category.save()
@@ -129,10 +165,16 @@ def update_category(request,id):
 
 # Update Tag
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def update_tag(request,id):
     tag = Tag.objects.get(id=id)
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO UPDATE TAGS
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to update tags!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         new_name = request.POST.get('tag_name').lower()
         tag.name = new_name
         tag.save()
@@ -142,10 +184,16 @@ def update_tag(request,id):
 
 # Delete Tag
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator','demo_moderator'])
 def delete_tag(request,id):
     tag = Tag.objects.get(id=id)
     if request.method == 'POST':
+
+        # DEMO ACCOUNTS AREN'T ALLOWED TO DELETE TAGS
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to delete tags!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         tag.delete()
         messages.success(request, f"{tag.name} Deleted Successfully", "alert-info")
         return redirect('moderator_dashboard')
@@ -153,17 +201,23 @@ def delete_tag(request,id):
 
 # Delete category
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def delete_category(request,id):
     category = BookCategory.objects.get(id=id)
     if request.method == 'POST':
+        
+        # DEMO ACCOUNTS AREN'T ALLOWED TO DELETE CATEGORIES
+        if 'demo_moderator' in request.user.groups.values_list('name', flat=True):
+            messages.info(request, 'Demo Accounts are not allowed to delete categories!', 'alert-info')
+            return redirect('moderator_dashboard')
+
         category.delete()
         messages.success(request, f"{category.category} Deleted Successfully", "alert-info")
         return redirect('moderator_dashboard')
 
 # Studen View 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student','demo_student'])
 def display_book(request, isbn):
     book = Book.objects.get(isbn=isbn)
 
@@ -177,7 +231,7 @@ def display_book(request, isbn):
 # Student View
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def books_by_category(request, category):
     category_ = BookCategory.objects.get(category=category)
     books = Book.objects.filter(category=category_).order_by('-created_date')

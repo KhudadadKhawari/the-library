@@ -1,4 +1,5 @@
 from datetime import datetime
+from tokenize import group
 from django.shortcuts import redirect, render, HttpResponse
 from book.models import Book, BookCategory, Tag
 from student.models import Student
@@ -31,9 +32,9 @@ def home(request):
     if request.user.is_authenticated:
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
         groups = list(l)                                     # QuerySet to `list`
-        if 'student' in groups:
+        if 'student' in groups or 'demo_student' in groups:
             return redirect('student_home')
-        elif 'moderator' in groups:
+        elif 'moderator' in groups or 'demo_moderator' in groups:
             return redirect('moderator_dashboard')
         elif 'admin' in groups:
             return redirect('/admin')
@@ -109,7 +110,7 @@ def user_login(request):
         groups = list(l)  # adding them to the list
 
         # if it is the moderator or Admin
-        if 'moderator' in groups or 'admin' in groups:
+        if 'moderator' in groups or 'admin' in groups or 'demo_moderator' in groups:
             if user is not None:
                 login(request, user)
                 return redirect('home')
@@ -163,13 +164,19 @@ def confirm_email(request, uidb64, token):
     return redirect('home')
     
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student','moderator'])
+@allowed_users(allowed_roles=['student','moderator', 'demo_student','demo_moderator'])
 # Edit Profile and Change Password
 def edit_profile(request):
     user = request.user
     form = UserProfileForm(instance=user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=user)
+
+        ## WE DON'T ALLOW DEMO USERS TO CHANGE PROFILE DETAILS
+        if 'demo_student' in user.groups.values_list('name', flat=True) or 'demo_moderator' in user.groups.values_list('name', flat=True):
+            messages.warning(request, "DEMO ACCOUNTS CAN'T CHANGE PROFILE DETAILS", 'alert-warning')
+            return redirect('edit_profile')
+
         if form.is_valid():
             the_user = form.save(commit=False)
             the_user.username = form.cleaned_data.get('username').lower()
@@ -187,12 +194,18 @@ def edit_profile(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student','moderator'])
+@allowed_users(allowed_roles=['student','moderator','demo_student','demo_moderator'])
 def change_password(request):
     user = request.user
     form = PasswordChangeForm(user)
     if request.method == 'POST':
         form = PasswordChangeForm(user, request.POST)
+
+        ## WE DON'T ALLOW DEMO USERS TO CHANGE PASSWORD
+        if 'demo_student' in user.groups.values_list('name', flat=True) or 'demo_moderator' in user.groups.values_list('name', flat=True):
+            messages.info(request, "You're a Demo User, You're not allowed to change your password", 'alert-info')
+            return redirect('change_password')
+
         if form.is_valid():
             form.save()
             messages.success(request, "Password Changed Successfully", "alert-success")
@@ -205,7 +218,7 @@ def change_password(request):
 
 # Student's Views
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def student_home(request):
     books = Book.objects.all().order_by('-created_date')
     categories = BookCategory.objects.all()
@@ -232,7 +245,7 @@ def student_home(request):
     return render(request, 'book/all_books.html', context)
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def favourites(request):
     user = request.user
     student = Student.objects.get(user=user)
@@ -245,7 +258,7 @@ def favourites(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def add_to_favourites(request, isbn):
     redirect_view = request.GET.get('redirect_view', 'home')
     user = request.user
@@ -267,7 +280,7 @@ def add_to_favourites(request, isbn):
 
 # Remove Book from Favourites
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def remove_from_favourites(request, isbn):
     try:
         book = Book.objects.get(isbn=isbn)
@@ -282,7 +295,7 @@ def remove_from_favourites(request, isbn):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def current_rented_by_student(request):
     user = request.user
     student = Student.objects.get(user=user)
@@ -294,7 +307,7 @@ def current_rented_by_student(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['student', 'demo_student'])
 def previously_rented_by_student(request):
     user = request.user
     student = Student.objects.get(user=user)
@@ -307,7 +320,7 @@ def previously_rented_by_student(request):
 
 # Moderator's Views
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def moderator_dashboard(request):
     categories_ = BookCategory.objects.all().order_by('id')
     tags_ = Tag.objects.all().order_by('id')
@@ -352,7 +365,7 @@ def moderator_dashboard(request):
 
 # OPERATIONS ON BOOKS
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def issue_book(request):
     students = Student.objects.all()
     user = request.user
@@ -408,11 +421,11 @@ def issue_book(request):
 
 # Operation: Return book By Student 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def return_book(request):
     issued_books = IssuedBook.objects.filter(date_returned__isnull=True)
 
-    
+
     if request.method == 'POST':
         isbn = request.POST.get('isbn').strip()
         stid = request.POST.get('stid').strip()
@@ -437,7 +450,7 @@ def return_book(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def returned_books(request):
     books = IssuedBook.objects.filter(date_returned__isnull=False)
 
@@ -449,7 +462,7 @@ def returned_books(request):
 
 
 @login_required(login_url='user_login')
-@allowed_users(allowed_roles=['moderator'])
+@allowed_users(allowed_roles=['moderator', 'demo_moderator'])
 def rented_books(request):
     books = IssuedBook.objects.filter(date_returned__isnull=True)
 
